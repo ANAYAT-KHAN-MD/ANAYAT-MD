@@ -15,7 +15,7 @@
     "api-dylux": "1.8.3",
     "api-qasim": "^3.2.5",
     "archiver": "^7.0.1",
-    "axios": "^1.7.9",
+    "axios": "^1.10.0",
     "express": "latest",
     "ffmpeg-static": "^5.2.0",
     "file_size_url": "^1.0.4",
