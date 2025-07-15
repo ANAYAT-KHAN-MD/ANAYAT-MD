@@ -19,7 +19,7 @@ async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sen
         }
 
         // Construct the API endpoint URL
-        const apiUrl = `https://api.davidcyriltech.my.id/download/tiktok?url=${encodeURIComponent(q)}`;
+        const apiUrl = `https://api.dreaded.site/api/tiktok?url=${encodeURIComponent(url)}`;
         const response = await fetch(apiUrl);
         const data = await response.json();
 
