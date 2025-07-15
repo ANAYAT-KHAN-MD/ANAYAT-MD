@@ -44,7 +44,7 @@ cmd({
 ║ 🚀 ANAYAT-MD 🚀           
 ╠══════════════════╣
 ║ HELLO, DEAR *${pushname}* 🎩
-║ 📅Date: *${currentDate}*
+║ 📅 Date: *${currentDate}*
 ║ ⏰ Time: *${currentTime}*
 ║ ⏳ Uptime: *${uptime}*
 ║ 👑 Owner: *${config.OWNER_NAME}*
