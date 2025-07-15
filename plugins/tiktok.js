@@ -40,6 +40,3 @@ async (conn, mek, m, { from, args, q, reply }) => {
         reply(`An error occurred: ${e.message}`);
     }
 });
-
-
-> POWERED BY ANAYAT-MD Official
