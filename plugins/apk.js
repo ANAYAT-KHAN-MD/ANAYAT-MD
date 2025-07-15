@@ -5,34 +5,58 @@ cmd({
     pattern: "apk",
     alias: ["app"],
     react: "📲",
-    desc: "📥 𝗗𝗼𝘄𝗻𝗹𝗼𝗮𝗱 𝗔𝗣𝗞",
-    category: "📁 𝗗𝗼𝘄𝗻𝗹𝗼𝗮𝗱",
+    desc: "📥 Download APK",
+    category: "📁 Download",
     filename: __filename
 },
 async (conn, mek, m, { from, quoted, args, q, reply }) => {
     try {
-        if (!q) return reply("❌ *𝙋𝙡𝙚𝙖𝙨𝙚 𝙥𝙧𝙤𝙫𝙞𝙙𝙚 𝙩𝙝𝙚 𝙖𝙥𝙥 𝙣𝙖𝙢𝙚!* ❌");
+        if (!q) {
+            return reply("❌ *Please provide the app name to search APK!*");
+        }
 
-        const res = await fetch(`https://api.davidcyriltech.my.id/download/apk?text=${encodeURIComponent(q)}`);
-        const data = await res.json();
+        const apiUrl = `https://api.davidcyriltech.my.id/download/apk?text=${encodeURIComponent(q)}`;
+        const response = await fetch(apiUrl);
         
-        if (!data.success) return reply("❌ *𝙁𝙖𝙞𝙡𝙚𝙙 𝙩𝙤 𝙛𝙚𝙩𝙘𝙝 𝘼𝙋𝙆.* ❌");
+        if (!response.ok) {
+            throw new Error("API response not OK");
+        }
 
-        let desc = `
+        const data = await response.json();
+
+        if (!data.success || !data.download_link) {
+            return reply("❌ *Failed to fetch APK. Try with another app name.*");
+        }
+
+        const apkName = data.apk_name || "Unknown App";
+        const thumbnail = data.thumbnail || "https://via.placeholder.com/300";
+        const downloadLink = data.download_link;
+
+        const description = `
 ╭═══〘 *📲 ANAYAT-MD APK* 〙═══⊷❍
-┃ 📂 *𝘼𝙥𝙥 𝙉𝙖𝙢𝙚:*  *『 ${data.apk_name} 』*
-┃ 📥 *𝘿𝙤𝙬𝙣𝙡𝙤𝙖𝙙 𝙨𝙩𝙖𝙧𝙩𝙚𝙙...*
-╰──━──━──━──━──━──━──━──━──━─╯
+┃ 📂 *App Name:*  *『 ${apkName} 』*
+┃ 📥 *Download started...*
+╰────────────────────────────╯
 
-*🔰 𝗣𝗼𝘄𝗲𝗿𝗲𝗱 𝗯𝘆 ANAYAT-MD Official* ⚡
+*🔰 Powered by ANAYAT-MD Official* ⚡
 `;
 
-        await conn.sendMessage(from, { image: { url: data.thumbnail }, caption: desc }, { quoted: mek });
-        
-        await conn.sendMessage(from, { document: { url: data.download_link }, mimetype: "application/vnd.android.package-archive", fileName: `『 ${data.apk_name} 』.apk`, caption: "✅ *𝗔𝗣𝗞 𝗨𝗽𝗹𝗼𝗮𝗱𝗲𝗱 𝗦𝘂𝗰𝗰𝗲𝘀𝘀𝗳𝘂𝗹𝗹𝘆!* ✅\n🔰 *𝗣𝗼𝘄𝗲𝗿𝗲𝗱 𝗯𝘆 ANAYAT-MD* ⚡" }, { quoted: mek });
-        
-    } catch (e) {
-        console.error(e);
-        reply("❌ *𝘼𝙣 𝙚𝙧𝙧𝙤𝙧 𝙤𝙘𝙘𝙪𝙧𝙧𝙚𝙙 𝙬𝙝𝙞𝙡𝙚 𝙛𝙚𝙩𝙘𝙝𝙞𝙣𝙜 𝙩𝙝𝙚 𝘼𝙋𝙆.* ❌");
+        // Send thumbnail and info
+        await conn.sendMessage(from, {
+            image: { url: thumbnail },
+            caption: description
+        }, { quoted: mek });
+
+        // Send APK file
+        await conn.sendMessage(from, {
+            document: { url: downloadLink },
+            mimetype: "application/vnd.android.package-archive",
+            fileName: `『 ${apkName} 』.apk`,
+            caption: "✅ *APK Uploaded Successfully!*\n🔰 *Powered by ANAYAT-MD* ⚡"
+        }, { quoted: mek });
+
+    } catch (error) {
+        console.error("APK Download Error:", error);
+        reply("❌ *An error occurred while fetching the APK. Please try again later.*");
     }
 });
